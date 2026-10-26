@@ -37,37 +37,43 @@ f = [-profit,TotalInvRed];
 
 end
 
-
-
 % NONLCON
 
 function [C, Ceq] = nonlcon(x)
+
 [~,l,m,h,il,im,ih,cl,cm,ch,SalePrice,rm1,rm2,~,nProcess] = ProductionPlanningData; % Accessing the data from the function
 
-Budget = 1000;
-AvailR1 = 500;
-AvailR2 = 500;
-IC = zeros(nProcess,1);
+Budget = 1000;                              % Budget available
+AvailRaw1 = 500;                            % Amount of raw material 1 available
+AvailRaw2 = 500;                            % Amount of raw material 2 available
+IC = zeros(nProcess,1);                     % Initialization of variable to store the investment cost for each process
 
-for j = 1 : nProcess
-    if x(j) >= l(j) && x(j) <= m(j)             % if the production is in between low and medium level
+for j = 1: nProcess
+
+    if x(j) >= l(j) && x(j) <= m(j)           
+        
         IC(j) = ((im(j) - il(j))/(m(j) - l(j)))*(x(j) - l(j)) + il(j);  % Determining the investment cost  for the range l to m
 
-    elseif x(j) > m(j) && x(j) <= h(j)          % if the production is in between medium and high level
+    elseif x(j) > m(j) && x(j) <= h(j)      
+
         IC(j) = ((ih(j) - im(j))/(h(j) - m(j)))*(x(j) - m(j)) + im(j);  % Determining the investment cost
+
     end
+
 end
 
 R1Reqd = x(:).*rm1(:);
 R2Reqd = x(:).*rm2(:);
 
-C = [sum(IC)-Budget;
-    sum(R1Reqd)-AvailR1;
-    sum(R2Reqd)-AvailR2];
-    x(:).*(l(:)-x(:));
+C = [
+    sum(R1Reqd)-AvailRaw1;
+    sum(R2Reqd)-AvailRaw2;
+    sum(IC)-Budget;
+    x(:).*(l(:)-x(:))
+];
+
 Ceq = [];
 end
-
 
 
 % SCRIPT
