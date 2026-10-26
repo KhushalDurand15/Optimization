@@ -68,7 +68,7 @@ R2Reqd = x(:).*rm2(:);
 C = [
     sum(R1Reqd)-AvailRaw1;
     sum(R2Reqd)-AvailRaw2;
-    sum(IC)-Budget;
+    sum(IC)-Budget
 ];
 
 Ceq = [];
