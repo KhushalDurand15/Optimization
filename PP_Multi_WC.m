@@ -57,9 +57,9 @@ for j = 1: nProcess
     elseif x(j) > m(j) && x(j) <= h(j)      
 
         IC(j) = ((ih(j) - im(j))/(h(j) - m(j)))*(x(j) - m(j)) + im(j);  % Determining the investment cost
-
+    else
+       x(j) = 0;
     end
-
 end
 
 R1Reqd = x(:).*rm1(:);
@@ -69,7 +69,6 @@ C = [
     sum(R1Reqd)-AvailRaw1;
     sum(R2Reqd)-AvailRaw2;
     sum(IC)-Budget;
-    x(:).*(l(:)-x(:))
 ];
 
 Ceq = [];
@@ -92,4 +91,17 @@ ub = h';
 optionga = optimoptions('gamultiobj','PopulationSize',7500,'MaxTime',30,'ParetoFraction',0.4,'PlotFcn',@gaplotpareto,'Display','off');
 [x,f] = gamultiobj(@SKS_ProductionPlanning,nProcess,[],[],[],[],lb,ub,@nonlcon,optionga);
 
+for j = 1:nProcess
+    if x(j) >0 && x(j)<l
+        x(j)=0;
+    end
+end
+
+figure;
+hold on;
+grid on;
 plot(f(:,1),f(:,2),'*r')
+xlabel('f1');
+ylabel('f2');
+legend('gamultiobj');
+title('pareto front');
